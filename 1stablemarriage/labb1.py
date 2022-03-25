@@ -1,47 +1,56 @@
+import sys
 
-textFile = open("1stablemarriage/data/sample/2.in", 'r')
-lines = textFile.readlines()
-nbrPairs = int (lines[0])
+def main():
+    inputs = list(sys.stdin.read().replace('\n', ' ').split(' '))
+    nbrPairs = int(inputs[0])
+    
+    #Datastructures
+    wom_pref = dict()
+    men_pref = dict()
+    pairs = dict()
+    singleMen = list() #SingleMen will be used as a FIFO-queue, as a "waitingline", where only the first is allowed to propose.
 
-#Datastructures
-wom_pref = dict()
-men_pref = dict()
-pairs = dict()
-singleMen = list() #SingleMen will be used as a stack
+    #Converting input from .in file to datastructures
+    for i in range(1,len(inputs)//(nbrPairs+1)+1): #Converting a long input-string to nbr+1 vectors.
+        lineData=[None]*(nbrPairs+1)
+        first = (i-1)*nbrPairs +i #Draw this and it will be quite straight-forward.
+        last = first+nbrPairs+1
+        lineData=inputs[first:last]
+        lineData = list(map(int, lineData))
+        data = lineData[:]
 
-#Converting datafiles from txt.file to datastructures
-row = 0
-for i in range(1,len(lines)):
-    row += 1
-    lineData =  lines[i].strip().split()
-    lineData = list(map(int, lineData))
-    data = lineData[1:]
+        #add these nbr+1 vectors as preferenses for person i.
+        if not lineData[0] in wom_pref:
+            pref = [None]*(nbrPairs+1)
+            #wom_pref[person], will return the number of prioritisation.
+            for j in range(1,nbrPairs+1):
+                pref[data[j]]=j
+            wom_pref[lineData[0]] = pref
+            pairs[lineData[0]]=None
+        else:
+            men_pref[lineData[0]] = data[1:]
+            singleMen.append(lineData[0])
 
-    if not lineData[0] in wom_pref:
-        pref = [None]*(nbrPairs+1)
-        #wom_pref[person], will return the number of prioritisation.
-        for j in range(nbrPairs):
-            pref[data[j]]=j
-        wom_pref[lineData[0]] = pref
-        pairs[lineData[0]]=None
-    else:
-        men_pref[lineData[0]] = data
-        singleMen.append(lineData[0])
+    #Sorting algoritm, removes singleMan from queue.
+    while singleMen:
+        man = singleMen.pop()
+        proposeTo = men_pref[man].pop(0)
+        #If women doesn not have a partner, they will createa a pair
+        if pairs[proposeTo] is None:
+            pairs[proposeTo]=man
+        #If woman get's proposed by a better partner, she will accept him, and the new single will be added to the list.
+        elif wom_pref[proposeTo][man]<wom_pref[proposeTo][pairs[proposeTo]]:
+            singleMen.append(pairs[proposeTo])
+            pairs[proposeTo] = man
+            
+        #third case, man gets rejected 
+        else :
+            singleMen.append(man)
 
-#Creating the sorting algoritm
-while singleMen:
-    man = singleMen.pop()
-    proposeTo = men_pref[man].pop(0)
-    if isinstance(pairs[proposeTo], type(None)):
-        pairs[proposeTo]=man
+    #Print the result
+    for i in range(1,nbrPairs+1):
+        print((pairs[i]))
+        
+    
 
-    elif wom_pref[man]<wom_pref[pairs[proposeTo]]:
-        singleMen.append(pairs[proposeTo])
-        pairs[proposeTo] = man
-
-    else :
-        singleMen.append(man)
-
-#Print the result
-for i in range(1,nbrPairs+1):
-    print(str(pairs[i]))
+main()
