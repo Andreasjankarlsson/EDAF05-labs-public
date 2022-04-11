@@ -9,28 +9,30 @@ class Point:
         self.y = y
 
 def distance(P1, P2):
-    return math.dist((P1.x, P2.x), (P1.y, P2.y))
+    return math.sqrt((P2.x-P1.x)**2 +(P2.y-P1.y)**2)
 
 def closestPair(px,py):
     n = len(px)
     #Base-case
     if n==2:
+        print(distance(px[0],px[1]))
         return distance(px[0],px[1])
     if n==3:
-        minDist = math.min( distance(px[0],px[1]), distance(px[0],px[2]), distance(px[1],px[2]))
+        minDist = min( distance(px[0],px[1]), distance(px[0],px[2]), distance(px[1],px[2]))
         return minDist
     
     # divide and calculate distance
-    mid = px[n/2]
-    dl = closestPair(px[:n/2], py)
-    dr = closestPair(px[n/2:], py)
-    d = math.min(dl,dr)
+    mid = px[int(n/2)]
+    dl = closestPair(px[:int(n/2)], py)
+    dr = closestPair(px[int(n/2):], py)
+    d = min(dl,dr)
 
     #Combine,
-    S = set()
+    """
+    S = list()
     for point in py:
-        if mid.x-d<py.x<mid.x+d:
-            S.add(py)
+        if mid.x-d< point.x <mid.x+d:
+            S.append(point)
 
     for point_index in range(0,len(S)):
         if S[point_index].x<mid.x:
@@ -39,18 +41,28 @@ def closestPair(px,py):
                 if(S[i].y>S[point_index].y+d):
                     break
                 deltaD = distance(S[point_index],S[i])
-                d = math.min(d,deltaD)
-            for i in range(n/2-1,0,-1): #Go down
+                d = min(d,deltaD)
+            for i in range(int(n/2)-1,0,-1): #Go down
                 if(S[i].y<point.y+d):
                     break
                 deltaD = distance(point,S[i])
-                d = math.min(d,deltaD)
+                d = min(d,deltaD)
+    return d
+    """
+
+    S = list()
+    for p in py:
+        if  mid.x-d < p.x < mid.x+d :
+            S.append(p)
+    for i in range(len(S)):
+        for j in range(len(S)):
+            if i!=j:
+                d = min(d, (distance(S[i], S[j])))
     return d
 
     
 
 def main():
-    print(str(math.dist(1,5)))
     lines_raw = sys.stdin.readlines()
     # Create nodes
     first_line =  lines_raw[0].strip().split()
@@ -68,7 +80,7 @@ def main():
     Px = list(sorted(Px, key=attrgetter('x')))
     Py = list(sorted(Px, key=attrgetter('y')))
 
-    closestPair(Px,Py)
+    print('%.6f' % closestPair(Px,Py))
     #Add points to px,py. sort these later using a smart algorithm.
 
     #
