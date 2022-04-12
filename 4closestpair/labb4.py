@@ -15,7 +15,6 @@ def closestPair(px,py):
     n = len(px)
     #Base-case
     if n==2:
-        print(distance(px[0],px[1]))
         return distance(px[0],px[1])
     if n==3:
         minDist = min( distance(px[0],px[1]), distance(px[0],px[2]), distance(px[1],px[2]))
@@ -54,10 +53,41 @@ def closestPair(px,py):
     for p in py:
         if  mid.x-d < p.x < mid.x+d :
             S.append(p)
+
+
+    #Check nodes upwards in list.
+    """
+    for elementIndex in range(0,len(S)):
+        if(True): #S[elementIndex].x<=mid.x): #Here we can add things so we can halve things...
+            for i in range(elementIndex+1,len(S)): #Travel up list.
+                if S[i].x>=S[elementIndex].x: #Only check objects on edge or right side.
+                    if(elementIndex!= i):
+                        if(S[i].y>=S[elementIndex].y+d):
+                            break 
+                        deltaD = distance(S[elementIndex],S[i] )
+                        d = min(d,deltaD)
+            for j in range(elementIndex-1,0,-1):
+                if S[j].x>=S[elementIndex].x:
+                    if(elementIndex!= j):
+                        if(S[j].y<S[elementIndex].y-d):
+                            break
+                        deltaD = distance(S[elementIndex],S[j] )
+                        d = min(d,deltaD)
+    """
+             
+    """
     for i in range(len(S)):
         for j in range(len(S)):
             if i!=j:
                 d = min(d, (distance(S[i], S[j])))
+    """
+
+    for i in range(len(S)):
+        for j in range(min(i+11,len(S))):
+            if i!=j:
+                d = min(d, (distance(S[i], S[j])))
+    
+    
     return d
 
     
@@ -78,7 +108,7 @@ def main():
         Py.append(p)
 
     Px = list(sorted(Px, key=attrgetter('x')))
-    Py = list(sorted(Px, key=attrgetter('y')))
+    Py = list(sorted(Py, key=attrgetter('y')))
 
     print('%.6f' % closestPair(Px,Py))
     #Add points to px,py. sort these later using a smart algorithm.
