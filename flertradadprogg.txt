@@ -1,0 +1,101 @@
+
+Starta tråd
+    class example extends Thread{
+        private String msg;
+
+        public example(String msg){
+            this.msg = msg;
+        }
+
+        @override 
+        run(){
+            while(true){
+                Random rand = new Random();
+                System.out.println(msg);
+                Thread.sleep(rand.nextInt(1000))
+                    //Här kommer det senare komma lite try/Catch saster.
+            }
+        }
+    }
+
+    start -> run. dvs, kalle på klassen via .start så löser threaden run() sedan.
+    (överskugga run, kalla på start)
+
+Starta tråd med Lambdauttryck
+    Runnable, interface.
+    Thread t1 = new Thread(()-> system.out.print("hej))!
+
+Kör en tråd till den är helt klar(dvs, när denna är klar hoppar vi vidare) .join() på tråden.
+
+Lås
+private Lock mutex = new ReentrantLock()
+    Kalla på mutex.lock() i tråden för att låsa.
+    kalle på mutex.unlock() i tråden för att låsa upp.
+
+Signalering
+    Semaforer
+        Körtillstånd
+        Läggs till genom.
+        Semaphore sem = new Semaphore();
+        sem.acuire(); //innan man hämtar något.
+        sem.relese(); //Efter man lagt något i kön
+
+        Semathore mutex = Semaphore(1);
+            Denna läggs runt det kritiska området
+
+Monitor
+    skapa ny klass
+        BlockingQueue{
+            private Semaphore sem = new Semaphore(0);
+            private Semaphore mutex = new Semaphore(1);
+        } 
+        +Lite övriga funktioner som vi vill kunna nyttja.
+
+        använd denna klassen i andra metoderna.
+
+
+public synchronized E metod -> automatisk lås.
+    Men, det kan fortfarande finnas kritiska områden
+
+wait() -> få en tråd att vänta. -> ha med denna i en wait metod.
+notifyAll() -> väcker alla väntade noder
+
+
+Task = uppgifter
+    Speciellt jobb som ska göras i en tråd.
+
+Thread pool
+    Worker thrads.
+        ish a to-do list.
+
+We can make a simple threadpool using
+    TaskQueue
+    workerThread
+    ThreadPool
+
+    ExecutorService
+        Runnable -> kör en kod 
+            Runnable task = new Task( ()-> ....)
+        Callable -> returnerar ett resultat.
+        
+        .newFixedThreadPool(n)
+            skapa n stycken trådar till poolen.
+
+        ex
+        Callable<String> task = () ->{
+            return RSA.crack(code,n);
+        }
+        ExecutorService pool = Executors.newFixedThreadPool(4);
+        Future<String> future = pool.submit(task);
+
+        future.get();
+
+Använding av swing
+    Använd invokeLater().... // kan heta något annat.
+    Stora jobb, wait,sleep -> gör i nya trådar.
+Thread confinement
+    Endast använda en tråd, ger säkerhet, kan ej bli kapplöpning.
+
+    Trådpoler -> 
+
+

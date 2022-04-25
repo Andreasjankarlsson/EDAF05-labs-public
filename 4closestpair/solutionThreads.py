@@ -1,9 +1,8 @@
 import sys
 import math
 from operator import attrgetter 
+import concurrent.futures
 
-import cProfile
-import pstats
 
 class Point:
     def __init__(self, x,y):
@@ -51,45 +50,13 @@ def closestPair(px,py):
     #Combine,
     S = py_test
     len_s = len(S)
-
-
     for i in range(len_s):
         for j in range(i+1, min(i + 11, len_s)):
             p, q = S[i], S[j]
             dst = distance(p, q)
             d = min(d,dst)    
     return d
-    """
-    for p in py:
-        if mid.x-d < p.x < mid.x+d :
-            S.append(p)
-    """
-    """
-    #Check points thats "between" two blocks.
-    for i in range(0,len(S)):
-        s = S[i]
-        centerX = px[breakIndex].x
-        centerY = px[breakIndex].y
-        if True:
-            for index in range(i+1,len(S)):             
-                if S[index].y >= centerY+d:
-                    break
-                if S[index].x >= centerY+d:
-                    break
-                d2 = distance(S[index],s)
-                d = min(d,d2)
-            for index in range(i,0,-1):
-                if s!=S[index]:
-                    if S[index].y >= centerY+d:
-                        break
-                    if S[index].x >= centerY+d:
-                        break
-                    d2 = distance(S[index],s)
-                    d = min(d,d2)
-            
-    return d
-    """
-    
+   
 
 def main():
     lines_raw = sys.stdin.readlines()
@@ -108,7 +75,39 @@ def main():
         Py.append(p)
     Px = list(sorted(Px, key=lambda tup: tup[0]))
     Py = list(sorted(Px, key=lambda tup: tup[1]))
-    print('%.6f' % closestPair(Px,Py))
+
+    d = 9999999999999
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        mid = int(len(Px)/2)
+        future1 = executor.submit(closestPair, Px[0:mid], Py)
+        print("len1:"+str(len(Px[0:mid])))
+        future2 = executor.submit(closestPair, Px[mid:], Py)
+        print("len2:"+str(len(Px[mid:])))
+        result1 = future1.result()
+        result2 = future2.result()
+        d= min(d, result1, result2)
+        compareList = list()
+
+        for ileft in range(mid,-1,-1):
+            if Px[ileft][0]<=(Px[mid][0]-d):
+                break
+            compareList.append(Px[ileft])
+
+        for iright in range(mid+1,len(Px)):
+            if Px[iright][0]>= Px[mid][0]+d:
+                break
+            compareList.append(Px[iright])
+        
+        compareList = list(sorted(compareList, key=lambda tup: tup[1]))
+        #Combine,
+        S = compareList
+        len_s = len(S)
+        for i in range(len_s):
+            for j in range(i+1, min(i + 11, len_s)):
+                p, q = S[i], S[j]
+                dst = distance(p, q)
+                d = min(d,dst)    
+        #print('%.6f' % d)
     """
     with cProfile.Profile() as pr: 
         closestPair(Px,Py)  

@@ -74,7 +74,7 @@ def BFS2(node,word):
                     neigbour.visited =True
         if not layers[steps]:
             return "Impossible"
-    
+     
 def restoreNodes(nodeList):
     for node in nodeList:
         node.visited = False

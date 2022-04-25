@@ -44,6 +44,7 @@ def Jarnik(node_list):
         shortest=99999999999999
         min_node_to = None
         for e in T:
+            
             for key,value in e.connections.items():
                 node = node_list[key-1]
                 
@@ -55,6 +56,7 @@ def Jarnik(node_list):
         Q.remove(min_node_to)
         T.add(min_node_to)
         path_length += shortest
+        print(path_length)
     print(path_length)
 
 

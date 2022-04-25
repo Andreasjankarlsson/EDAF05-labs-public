@@ -46,17 +46,20 @@ def Jarnik(node_list):
         Q[node.node_id] = node
 
     del Q[start_node.node_id]
+
     path_length=0
     
     while Q:
         shortest=99999999999999
         min_node_to = None
         while(True):
+            # Pop the side with the smallest weight.
             heappop = heapq.heappop(heapqueue)
             next_node_index = heappop[1]
             next_node = node_list[next_node_index-1]         
 
-            if not next_node.visited:
+            if not next_node.visited: #If we haven't been to that node, mark it as visited, 
+                #add weight to our path, add all of this nodes connections to our heapList.
                 next_node.visited = True
                 path_length += heappop[0]
                 for (key,value) in next_node.connections.items():
