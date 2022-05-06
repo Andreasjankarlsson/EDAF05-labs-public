@@ -37,13 +37,13 @@ def main():
     cMatrix.cmatrix = connectionMatrix
 
     #Retrieving strings,
-    Q = lines_raw[k+1].strip().split()[0]
-    string1 = lines_raw[k+2].strip().split()[0]
-    string2 = lines_raw[k+2].strip().split()[1]
-    pMatrix.string1 = string1
-    pMatrix.string2 = string2
-
-    algorithm("","")
+    Q = int(lines_raw[k+1].strip().split()[0])
+    for i in range(k+2,k+2+Q):
+        string1 = lines_raw[i].strip().split()[0]
+        string2 = lines_raw[i].strip().split()[1]
+        pMatrix.string1 = string1
+        pMatrix.string2 = string2
+        algorithm("","")
             
 
 def algorithm(str1,str2):
@@ -62,13 +62,13 @@ def algorithm(str1,str2):
     returnMatrix.returnmatrix[0][0]="done"
 
     #print(returnMatrix.returnmatrix)
-    print(opt(len(pMatrix.string2),len(pMatrix.string1))) 
-
+    opt(len(pMatrix.string2),len(pMatrix.string1))
+    #print(opt(len(pMatrix.string2),len(pMatrix.string1))) 
     #print(pMatrix.pmatrix)
     #print(returnMatrix.returnmatrix)
-    for i in range(len(returnMatrix.returnmatrix)):
-        print(returnMatrix.returnmatrix[i])
-
+    #for i in range(len(returnMatrix.returnmatrix)):
+    #    print(returnMatrix.returnmatrix[i])
+    print(buildOutput())
 
 def score(ci,cj):
     if ci=='*' or cj=='*':
@@ -100,6 +100,45 @@ def opt(i,j):
         returnMatrix.returnmatrix[i][j] = "left"    
     return best
     
+def buildOutput():
+    col = len(returnMatrix.returnmatrix[0]) -1
+    row = len(returnMatrix.returnmatrix) -1
+    #print("row:"+str(row) +"    col:"+str(col))
+    string1 = pMatrix.string1
+    string2 = pMatrix.string2
+    returnString1 =""
+    returnString2 =""
+    prev = "diag"
+    while(True):
+        current = returnMatrix.returnmatrix[row][col]
+        if current == "done":
+            return returnString1 +" " + returnString2
+        if prev == "diag":
+            char1 = string1[col-1]
+            char2 = string2[row-1]
+            returnString1 = char1 + returnString1
+            returnString2 = char2 + returnString2
+            row -= 1
+            col -= 1
+        if prev == "top":
+            char1 = '*'
+            char2 = string2[row-1]
+            returnString1 = char1 + returnString1
+            returnString2 = char2 + returnString2
+            row -= 1
+            col -= 0
+        if prev == "left":
+            char1 = string1[col-1]
+            char2 = '*'
+            returnString1 = char1 + returnString1
+            returnString2 = char2 + returnString2
+            row -= 0
+            col -= 1
+        prev = current
+
+
+    
+
 
         
 main()
