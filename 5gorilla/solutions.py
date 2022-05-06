@@ -108,26 +108,26 @@ def buildOutput():
     string2 = pMatrix.string2
     returnString1 =""
     returnString2 =""
-    prev = "diag"
+    prev = ""
     while(True):
         current = returnMatrix.returnmatrix[row][col]
         if current == "done":
             return returnString1 +" " + returnString2
-        if prev == "diag":
+        elif prev == "diag":
             char1 = string1[col-1]
             char2 = string2[row-1]
             returnString1 = char1 + returnString1
             returnString2 = char2 + returnString2
             row -= 1
             col -= 1
-        if prev == "top":
+        elif prev == "top":
             char1 = '*'
             char2 = string2[row-1]
             returnString1 = char1 + returnString1
             returnString2 = char2 + returnString2
             row -= 1
             col -= 0
-        if prev == "left":
+        elif prev == "left":
             char1 = string1[col-1]
             char2 = '*'
             returnString1 = char1 + returnString1
