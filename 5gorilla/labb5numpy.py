@@ -9,7 +9,7 @@ class Score:
         id_crow = Score.charMap[crow]
         id_ccol = Score.charMap[ccol]
         return Score.matchMatrix[id_crow][id_ccol]
-@profile
+#@profile
 def main():
     lines_raw = sys.stdin.readlines()
     charMap = dict()
@@ -40,7 +40,7 @@ def main():
         returnString1, returnString2 = returnStrings(string1,string2,tracebackTable)
         print(returnString1 +" " +returnString2)
 
-@profile       
+#@profile       
 def returnStrings(string1,string2,tracebackTable):
     row = len(tracebackTable) -1
     col = len(tracebackTable[0])-1
@@ -66,7 +66,7 @@ def returnStrings(string1,string2,tracebackTable):
             break
     return returnString1,returnString2
 
-@profile
+#@profile
 def setTables(string1,string2,pointTable, tracebackTable):
     
     for row in range(1,len(string2)+1):
@@ -89,8 +89,8 @@ def setTables(string1,string2,pointTable, tracebackTable):
 def buildTables(string1,string2):
     col = len(string1)
     row = len(string2)
-    pointTable = [[None for x in range(col+1)] for y in range(row+1)]
-    tracebackTable = [[None for x in range(col+1)] for y in range(row+1)]
+    pointTable = np.array([[None for x in range(col+1)] for y in range(row+1)])
+    tracebackTable =np.array([[None for x in range(col+1)] for y in range(row+1)])
 
     for i in range(col+1):
         pointTable[0][i] = i * -4

@@ -1,5 +1,5 @@
 import sys
-import numpy as np
+
 
 class Score:
     charMap = dict()
@@ -9,7 +9,7 @@ class Score:
         id_crow = Score.charMap[crow]
         id_ccol = Score.charMap[ccol]
         return Score.matchMatrix[id_crow][id_ccol]
-@profile
+#@profile
 def main():
     lines_raw = sys.stdin.readlines()
     charMap = dict()
@@ -22,12 +22,13 @@ def main():
 
     #Setting up a matrix to figure out the value when two characters are matching.
     k = len(lines_raw[1].strip().split())
-    matchMatrix = [[None for x in range(k)] for y in range(k)]
+    matchMatrix = [[0 for x in range(k)] for y in range(k)]
     for i in range(k):
         line = lines_raw[1+i].strip().split()
         for j in range(k):
             matchMatrix[i][j] = int(line[j])
     Score.matchMatrix = matchMatrix
+    tracebackTable, pointTable = buildTables("","")
 
 
     #Retrieving strings, Q = nbr of strings
@@ -35,12 +36,11 @@ def main():
     for i in range(k+2,k+2+Q):
         string1 = lines_raw[i].strip().split()[0]
         string2 = lines_raw[i].strip().split()[1]
-        tracebackTable, pointTable = buildTables(string1,string2)
         tracebackTabe = setTables(string1,string2,pointTable,tracebackTable)
         returnString1, returnString2 = returnStrings(string1,string2,tracebackTable)
         print(returnString1 +" " +returnString2)
 
-@profile       
+#@profile       
 def returnStrings(string1,string2,tracebackTable):
     row = len(tracebackTable) -1
     col = len(tracebackTable[0])-1
@@ -66,7 +66,7 @@ def returnStrings(string1,string2,tracebackTable):
             break
     return returnString1,returnString2
 
-@profile
+#@profile
 def setTables(string1,string2,pointTable, tracebackTable):
     
     for row in range(1,len(string2)+1):
@@ -87,10 +87,10 @@ def setTables(string1,string2,pointTable, tracebackTable):
 
 #@profile
 def buildTables(string1,string2):
-    col = len(string1)
-    row = len(string2)
-    pointTable = [[None for x in range(col+1)] for y in range(row+1)]
-    tracebackTable = [[None for x in range(col+1)] for y in range(row+1)]
+    col = 3500
+    row = 3500
+    pointTable = [[0 for x in range(col+1)] for y in range(row+1)]
+    tracebackTable = [[0 for x in range(col+1)] for y in range(row+1)]
 
     for i in range(col+1):
         pointTable[0][i] = i * -4
